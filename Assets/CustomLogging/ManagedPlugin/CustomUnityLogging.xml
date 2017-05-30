@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CustomUnityLogging</name>
+    </assembly>
+    <members>
+        <member name="M:ArtCom.Logging.Log.WriteDebug(System.String,System.Object[])">
+            <summary>
+            Writes a debug message for development-only purposes.
+            </summary></member>
+        <member name="M:ArtCom.Logging.Log.Write(System.String,System.Object[])">
+            <summary>
+            Writes a regular log message.
+            </summary></member>
+        <member name="M:ArtCom.Logging.Log.WriteWarning(System.String,System.Object[])">
+            <summary>
+            Writes a log warning that indicates something might be wrong.
+            </summary></member>
+        <member name="M:ArtCom.Logging.Log.WriteError(System.String,System.Object[])">
+            <summary>
+            Writes a log error that indicates a recoverable failure.
+            </summary></member>
+        <member name="M:ArtCom.Logging.Log.WriteFatal(System.String,System.Object[])">
+            <summary>
+            Writes a fatal log error that indicates a non-recoverable failure.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogFormat.TimeStampFormatISO8601">
+            <summary>
+            DateTime format specifier using the ISO 8601 date/time format.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogFormat.TimeStampFormatDefault">
+            <summary>
+            The DateTime format specifier that is used as long as nothing else is specified.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogFormat.FrameStampFormatDefault">
+            <summary>
+            The frame stamp format specifier that is used as long as nothing else is specified.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogMessageType.Debug">
+            <summary>
+            A debug-only message that should be absent in non-development builds.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogMessageType.Message">
+            <summary>
+            A regular log message.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogMessageType.Warning">
+            <summary>
+            A warning indicates that something might be wrong, though the
+            application can potentially continue to function as intended.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogMessageType.Error">
+            <summary>
+            An error indicates a recoverable failure that may, however,
+            lead to limited program functionality or undefined behavior.
+            </summary></member>
+        <member name="F:ArtCom.Logging.LogMessageType.Fatal">
+            <summary>
+            A fatal error indicates a non-recoverable failure that will
+            likely cause the application to crash or reach a state where
+            no meaningful operation is possible.
+            </summary></member>
+        <member name="M:ArtCom.Logging.Logs.InitGlobalLogFile(System.String,System.String,ArtCom.Logging.TextLogOutputConfig)">
+            <summary>
+            Initializes a global logfile using the specified target directory and file name
+            using default settings. If not specified otherwise, a Logs directory is used and
+            the log file's name is derived from the current <see cref="T:System.DateTime" />.
+            </summary></member>
+    </members>
+</doc>
