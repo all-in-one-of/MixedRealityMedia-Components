@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 733b151bc811e384a97a476eef6c7325
+timeCreated: 1496163391
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - depthTexture: {fileID: 8400000, guid: 58d646ea2da8fe048bfd048401dff29f, type: 2}
+  - rgbaTexture: {fileID: 8400000, guid: c18b823b0a26bbb46bdcb5fb48be9fee, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
