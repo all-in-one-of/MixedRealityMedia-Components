@@ -16,7 +16,7 @@ public class RenderBufferSwapper : MonoBehaviour {
 	void Start () {
 		RebuildRenderBuffers();
 		observerCamera.depthTextureMode = DepthTextureMode.Depth;
-		Camera.onPreRender += OnPreRender;
+		Camera.onPreRender += OnPreRenderCB;
 	}
 	
 	void Update () {
@@ -26,7 +26,7 @@ public class RenderBufferSwapper : MonoBehaviour {
 		}
 	}
 
-	void OnPreRender(Camera cam) {
+	void OnPreRenderCB(Camera cam) {
 		if(cam != observerCamera) {
 			return;
 		}

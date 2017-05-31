@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_Saturate ("Saturation Multiplier", Range(0.5, 15)) = 1
+		[Toggle] _Invert ("Invert Depth Texture", Float) = 0
 	}
 	SubShader
 	{
@@ -46,15 +47,20 @@
 			}
 			
 			float _Saturate;
+			float _Invert;
 
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
-				fixed4 col = tex2D(_MainTex, i.uv);
+				fixed4 col = fixed4(tex2D(_MainTex, i.uv).rrr, 1);
 				// apply fog
 				UNITY_APPLY_FOG(i.fogCoord, col);
-				return col * _Saturate;
-			}
+				col *= _Saturate;
+				if(_Invert) {
+					return 1 - col;
+				}
+				return col;
+ 			}
 			ENDCG
 		}
 	}
