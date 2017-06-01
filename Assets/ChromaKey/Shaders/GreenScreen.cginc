@@ -38,8 +38,10 @@ fixed3 ycgco2rgb(fixed3 col) {
 
 fixed4 chromaKey(fixed4 col, fixed4 _TargetColor) {
     // Chroma Keying
+    // LAB Color Space
     fixed3 ycgco = rgb2ycgco(col.rgb);
     fixed2 target = rgb2ycgco(_TargetColor.rgb).yz;
+    // Adaptive Threshold over multiple samples - Otsu’s Binarization
     fixed d = distance(ycgco.yz, target) * 100;
     d = smoothstep(_Threshold * 10, (_Threshold + _Tolerance) * 10, d);
 
