@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_Saturate ("Saturation Multiplier", Range(0.5, 15)) = 1
+		_CustomProjection ("Projection Paramters", Vector) = (0, 0, 0, 0)
 		[Toggle] _Invert ("Invert Depth Texture", Float) = 0
 		[Toggle] _OpenGL ("OpenGL Renderbackend", Float) = 0
 	}
@@ -20,7 +21,9 @@
 			// make fog work
 			#pragma multi_compile_fog
 
+
 			#include "UnityCG.cginc"
+			#include "D3D_OpenGL.cginc"
 
 			struct appdata
 			{
@@ -31,7 +34,6 @@
 			struct v2f
 			{
 				float2 uv : TEXCOORD0;
-				UNITY_FOG_COORDS(1)
 				float4 vertex : SV_POSITION;
 			};
 
@@ -43,26 +45,22 @@
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				UNITY_TRANSFER_FOG(o,o.vertex);
 				return o;
 			}
 			
 			float _Saturate;
 			float _Invert;
-			float _OpenGL;
-
+			float4 _CustomProjection;
+			
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
 				fixed depthVal = tex2D(_MainTex, i.uv).r;
-				if(_OpenGL) {
-					depthVal = (depthVal + 1) / 2;
-				}
-				fixed4 col = fixed4(depthVal.rrr, 1);
+				depthVal = LinearDepth(_CustomProjection, depthVal);
 
-				// apply fog
-				UNITY_APPLY_FOG(i.fogCoord, col);
+				fixed4 col = fixed4(depthVal.rrr, 1);
 				col *= _Saturate;
+				col = col * 2 - 1;
 				if(_Invert) {
 					return 1 - col;
 				}

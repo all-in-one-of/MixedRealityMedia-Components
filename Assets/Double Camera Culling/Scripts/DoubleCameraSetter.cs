@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[ExecuteInEditMode]
 public class DoubleCameraSetter : MonoBehaviour {
 
 	[TooltipAttribute("Takes configuration lead, upon start " +
@@ -10,6 +11,9 @@ public class DoubleCameraSetter : MonoBehaviour {
 	public Camera nearCamera;
 	public Camera farCamera;
 	public float splitDepth;
+	[TooltipAttribute("Lets near/far plane overlap each other for a" + 
+		" specific margin.")]
+	public float depthOverlap;
 	public Vector2 nearFarPlane;
 	
 	void Start () {
@@ -21,17 +25,25 @@ public class DoubleCameraSetter : MonoBehaviour {
 			Debug.LogError("Far camera missing.");
 			enabled = false;
 		}
-		
+		// sync projection mode
 		farCamera.orthographic = nearCamera.orthographic;
-		farCamera.depth = nearCamera.depth + 1;
+		// set correct render order
+		nearCamera.depth = farCamera.depth + 1;
+		// near camera only clears depth buffer
+		nearCamera.clearFlags = CameraClearFlags.Depth;
 	}
 	
 	void Update () {
-		splitDepth = Mathf.Clamp(splitDepth, nearFarPlane.x, nearFarPlane.y);
+		// If the overlap is too small/big, one camera will not render properly.
+		var minSplitDist = Mathf.Max(nearFarPlane.x, depthOverlap) + 0.001f;
+		var maxSplitDist = Mathf.Max(nearFarPlane.y, depthOverlap) - 0.001f; 
+		splitDepth = Mathf.Clamp(splitDepth, minSplitDist, maxSplitDist);
+		// sync cameras
 		farCamera.transform.position = nearCamera.transform.position;
+		// set clip planes correctly
 		nearCamera.nearClipPlane = nearFarPlane.x;
-		nearCamera.farClipPlane = splitDepth;
-		farCamera.nearClipPlane = splitDepth;
+		nearCamera.farClipPlane = splitDepth + depthOverlap;
+		farCamera.nearClipPlane = splitDepth - depthOverlap;
 		farCamera.farClipPlane = nearFarPlane.y;
 	}
 }
