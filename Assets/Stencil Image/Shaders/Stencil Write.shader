@@ -14,6 +14,7 @@
 		Tags { "RenderType"="Opaque" }
 		LOD 200
 		Cull off
+		ColorMask RGB
 		CGPROGRAM
 		#pragma surface surf Lambert
 
@@ -27,7 +28,7 @@
 		void surf (Input IN, inout SurfaceOutput o) 
 		{
 			o.Albedo = _Color.rgb;
-			o.Alpha = _Color.a;
+			// o.Alpha = _Color.a;
 		}
 		ENDCG
 	} 
