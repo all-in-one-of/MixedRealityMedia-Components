@@ -4,6 +4,6 @@ using UnityEngine;
 
 [System.Serializable]
 public class SceneNote : MonoBehaviour {
-	[TextArea(10, 3)]
+	[TextArea(25, 25)]
 	public string note;
 }
