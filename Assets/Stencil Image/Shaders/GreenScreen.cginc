@@ -114,7 +114,9 @@ fixed3 sRGB2CAT02(fixed3 col) {
 */
 
 fixed4 chromaKey(fixed4 col, fixed4 _TargetColor) {
-
+    if(col.a == 0) {
+        return col;
+    }
     if(_YCgCo) {
         // return greenFilter(col, _TargetColor);
         // YCGCO Color Space

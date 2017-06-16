@@ -18,7 +18,7 @@
 			half4 frag(v2f_img i) : COLOR
 			{
 				fixed4 col = tex2D(_MainTex, i.uv);
-				return half4(col.rgb, 1 - col.a);
+				return half4(col.rgb, 0);
 			}
 			
 			ENDCG

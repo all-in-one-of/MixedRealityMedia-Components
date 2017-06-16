@@ -6,6 +6,7 @@
 	}
 	SubShader 
 	{
+		
 		Stencil 
 		{
 			Ref 2
@@ -46,7 +47,8 @@
 			sampler2D _ImageTex;
 
 			fixed4 frag (v2f i) : SV_Target {
-				return tex2D(_ImageTex, i.uv);
+				fixed4 col = tex2D(_ImageTex, i.uv);
+				return fixed4(col.rgb, col.a);
 			}
 
 			ENDCG

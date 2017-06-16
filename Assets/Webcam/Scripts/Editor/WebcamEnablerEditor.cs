@@ -14,7 +14,8 @@ public class WebcamEnablerEditor : Editor {
 			return;
 		}
 
-		EditorGUILayout.ObjectField("Material", tgt.material, typeof(Material), true);
+		tgt.material = EditorGUILayout.ObjectField("Material", tgt.material, typeof(Material), true) as Material;
+		tgt.shaderPropertyName = EditorGUILayout.TextField("Shader Property Field", tgt.shaderPropertyName);
 		tgt.imageSize = EditorGUILayout.Vector2Field("Resolution", tgt.imageSize);
 		tgt.frameRate = EditorGUILayout.IntSlider("Framerate", tgt.frameRate, 1, 60);
         tgt.CamIndex = EditorGUILayout.Popup(

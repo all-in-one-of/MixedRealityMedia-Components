@@ -2,7 +2,7 @@
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class RenderBufferSwapper : MonoBehaviour {
+public class RenderBufferSwapper_old : MonoBehaviour {
 	[RangeAttribute(0, 30)]
 	public int frameDelay;
 	public List<RenderTexture> buffers;

@@ -5,6 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		_AlphaTex ("Alpha Texture", 2D) = "white" {}
 		_WebcamTex ("Webcam Texture", 2D) = "white" {}
+		_WebcamMask ("Webcam Mask", 2D) = "white" {}
 		_TargetColor ("Target Color", Color) = (0, 1, 0, 1)
 		_SpillRemoval ("Spill Removal", Range(0, 2)) = 0.18
 		_Tolerance ("Tolerance", Range(0, 2)) = 0.1
@@ -53,6 +54,7 @@
 			
 			sampler2D _AlphaTex;
 			sampler2D _WebcamTex;
+			sampler2D _WebcamMask;
 			fixed4 _TargetColor;
 
 			fixed4 mixCol(fixed4 front, fixed4 median) {
@@ -68,7 +70,17 @@
 				fixed4 alpha = tex2D(_AlphaTex, i.uv);
 				col.a = alpha.a;
 				fixed4 webCol = tex2D(_WebcamTex, i.uv);
-				col = mixCol(col, chromaKey(webCol, _TargetColor));
+				fixed4 webMask = tex2D(_WebcamMask, i.uv);
+				// return 1 - webMask.aaaa;
+				webCol.a = 1 - webMask.a;
+				webCol = chromaKey(webCol, _TargetColor);
+				col = mixCol(col, webCol);
+				return col;
+				if(webCol.a == 1) {
+					return webCol;
+				}
+				return col;
+				col = mixCol(col, webCol); // chromaKey(webCol, _TargetColor));
 				UNITY_APPLY_FOG(i.fogCoord, col);
 				return col;
 			}

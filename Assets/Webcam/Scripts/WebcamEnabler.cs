@@ -5,7 +5,6 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class WebcamEnabler : MonoBehaviour {
-
 	private static string[] _camNames;
 	public static string[] CamNames {
 		get {
@@ -36,12 +35,13 @@ public class WebcamEnabler : MonoBehaviour {
 		}
 	}
 	public Material material;
+	public string shaderPropertyName = "_MainTex";
 	public string deviceName;
 
 	public Vector2 imageSize;
 	public int frameRate;
 
-	private WebCamTexture wc;
+	public WebCamTexture webcamTexture;
 
 	// Use this for initialization
 	void Start () {
@@ -52,27 +52,28 @@ public class WebcamEnabler : MonoBehaviour {
 	}
 
 	void OnDisable() {
-		if(wc != null && wc.isPlaying) {
-			wc.Stop();
+		if(webcamTexture != null && webcamTexture.isPlaying) {
+			webcamTexture.Stop();
 		}
 	}
 
 	void ResetCamera() {
-		if(wc != null && wc.isPlaying) {
-			wc.Stop();
+		if(webcamTexture != null && webcamTexture.isPlaying) {
+			webcamTexture.Stop();
 		}
 		if(!Application.isPlaying) {
 			return;
 		}
 		Debug.Log("Restarting Camera: " + deviceName);
-		wc = new WebCamTexture(deviceName, (int) imageSize.x, (int) imageSize.y, frameRate);
-		material.mainTexture = wc;
-		wc.Play();
+		webcamTexture = new WebCamTexture(deviceName, (int) imageSize.x, (int) imageSize.y, frameRate);
+		webcamTexture.name = "Webcam Texture (generated)";
+		webcamTexture.Play();
+		material.SetTexture(shaderPropertyName, webcamTexture);
 	}
 
 	public void StopCamera() {
-		if(wc != null && wc.isPlaying) {
-			wc.Stop();
+		if(webcamTexture != null && webcamTexture.isPlaying) {
+			webcamTexture.Stop();
 		}
 	}
 }
