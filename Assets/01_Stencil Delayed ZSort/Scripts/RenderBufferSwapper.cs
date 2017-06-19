@@ -20,10 +20,12 @@ public class RenderBufferSwapper : MonoBehaviour {
     public Camera fullCamera;
     public Camera frontCamera;
 	public Camera stencilCamera;
+    public Camera lightCamera;
 	public string materialFullFieldName;
 	public string materialFrontFieldName;
 	public string materialWebcamFieldName;
     public string materialWebcamMaskFieldName;
+    public string materialLightFieldName;
 
 
     private float frameWindow;
@@ -38,6 +40,7 @@ public class RenderBufferSwapper : MonoBehaviour {
     public List<RenderTexture> colorBuffers;
     public List<RenderTexture> alphaBuffers;
 	public List<RenderTexture> stencilBuffers;
+    public List<RenderTexture> lightBuffers;
 	public WebcamEnabler webcamEnabler;
     public int index;
 
@@ -53,6 +56,8 @@ public class RenderBufferSwapper : MonoBehaviour {
         initialDelay = frameDelay + fractionDelay;
 
 		RebuildRenderBuffers();
+
+        targetMaterial.SetTexture(materialWebcamFieldName, webcamEnabler.webcamTexture);
 	}
 	
 	void Update () {
@@ -74,12 +79,14 @@ public class RenderBufferSwapper : MonoBehaviour {
         fullCamera.targetTexture = colorBuffers[index];
         frontCamera.targetTexture = alphaBuffers[index];
         stencilCamera.targetTexture = stencilBuffers[index];
+        lightCamera.targetTexture = lightBuffers[index];
         // stencilCamera.SetTargetBuffers(sBuf.colorBuffer, sBuf.depthBuffer);
 
 		
         var frameTex = colorBuffers[(index + 1) % IntDelay];
         var alphaTex = alphaBuffers[(index + 1) % IntDelay];
 		var stencilTex = stencilBuffers[(index + 1) % IntDelay];
+        var lightTex = lightBuffers[(index + 1) % IntDelay];
 
 		// at this point do the stencil operation on the WC material
         // stencilMaterial.mainTexture = stencilTex;
@@ -87,8 +94,8 @@ public class RenderBufferSwapper : MonoBehaviour {
         // unlitDebugDisplay.mainTexture = stencilTex;
         targetMaterial.SetTexture(materialFullFieldName, frameTex);
         targetMaterial.SetTexture(materialFrontFieldName, alphaTex);
-		targetMaterial.SetTexture(materialWebcamFieldName, webcamEnabler.webcamTexture);
         targetMaterial.SetTexture(materialWebcamMaskFieldName, stencilTex);
+        targetMaterial.SetTexture(materialLightFieldName, lightTex);
         index++;
     }
 
@@ -111,6 +118,10 @@ public class RenderBufferSwapper : MonoBehaviour {
 			var sBuf = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
 			sBuf.name = "Stencil Buffer " + i;
 			stencilBuffers.Add(sBuf);
+
+            var lBuf = new RenderTexture(Screen.width, Screen.height, 0, RenderTextureFormat.ARGB32);
+            lBuf.name = "Light Buffer " + i;
+            lightBuffers.Add(lBuf);
 		}
 		Debug.Log("Rebuilt buffers");
 	}
