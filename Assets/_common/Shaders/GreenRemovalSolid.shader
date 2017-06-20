@@ -7,7 +7,6 @@
 		_SpillRemoval ("Spill Removal", Range(0, 2)) = 0.2
 		_Tolerance ("Tolerance", Range(0, 5)) = 0.2
 		_Threshold ("Threshold", Range(0, 5)) = 0.2
-		_Lerp ("Lerp", Range(0, 1)) = 0.5
 		_ColorTimer ("Color Rotation Timer", Range(0, 10)) = 1
 		_YCgCoMult ("YCgCo Multiplier", Range(0, 200)) = 50
 		[Toggle] _YCgCo("YCgCo Method", Float) = 0

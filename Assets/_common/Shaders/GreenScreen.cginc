@@ -3,8 +3,6 @@ float _Tolerance;
 float _Threshold;
 float _YCgCoMult;
 int _Inverse;
-int _YCgCo;
-
 
 // super barebones simplistic green screen removal
 float4 greenFilter(float4 pixel, float4 targetColor) {
@@ -35,6 +33,25 @@ float3 ycgco2rgb(float3 col) {
         col.x + col.y,
         col.x - col.y - col.z
     );
+}
+
+float4 ycgcoRemoval(float4 col, fixed4 targetColor) {
+    // YCGCO Color Space
+    float3 ycgco = rgb2ycgco(col.rgb);
+    float2 target = rgb2ycgco(targetColor.rgb).yz;
+    // Adaptive Threshold over multiple samples - Otsu’s Binarization
+    float d = distance(ycgco.yz, target) * _YCgCoMult;
+    d = smoothstep(_Threshold * 10, (_Threshold + _Tolerance) * 10, d);
+    return float4(col.rgb, d);
+    // Spill Removal Part
+    float3 ycgco2 = rgb2ycgco(col);
+    float sub = dot(target, ycgco2.yz) / dot(target, target);
+    ycgco2.yz -= target * (sub + 0.5) * _SpillRemoval;
+    float3 col2 = ycgco2rgb(ycgco2);
+    if(_Inverse) {
+        d = 1 - d;
+    }
+    return float4(col2, col.a * d);
 }
 
 // Color Space Conversions can be found here:
@@ -108,38 +125,18 @@ float deltaE_CIE76_sRGB(float3 srgb, float3 ref) {
     return deltaE_CIE76(srgb, ref);    
 }
 
-float4 chromaKey(float4 col, float4 _TargetColor) {
+float4 chromaKey(float4 col, float4 targetColor) {
     if(col.a == 0) {
         return col;
     }
-    if(_YCgCo) {
-        // return greenFilter(col, _TargetColor);
-        // YCGCO Color Space
-        float3 ycgco = rgb2ycgco(col.rgb);
-        float2 target = rgb2ycgco(_TargetColor.rgb).yz;
-        // Adaptive Threshold over multiple samples - Otsu’s Binarization
-        float d = distance(ycgco.yz, target) * _YCgCoMult;
-        d = smoothstep(_Threshold * 10, (_Threshold + _Tolerance) * 10, d);
-        return float4(col.rgb, d);
-        // Spill Removal Part
-        float3 ycgco2 = rgb2ycgco(col);
-        float sub = dot(target, ycgco2.yz) / dot(target, target);
-        ycgco2.yz -= target * (sub + 0.5) * _SpillRemoval;
-        float3 col2 = ycgco2rgb(ycgco2);
-        if(_Inverse) {
-            d = 1 - d;
-        }
-        return float4(col2, col.a * d);
-    }
-
-    float d2 = deltaE_CIE76_sRGB(col.xyz, _TargetColor.xyz) / 100;
+    float d2 = deltaE_CIE76_sRGB(col.xyz, targetColor.xyz) / 100;
     d2 = smoothstep(_Threshold, (_Threshold + _Tolerance), d2);
     d2 = pow(d2, 1/1.5f);
     return float4(col.rgb, col.a * d2);
 }
 
-float3 spillRemoval(float3 rgb, float3 _TargetColor) {
-        float2 target = rgb2ycgco(_TargetColor.rgb).yz;
+float3 spillRemoval(float3 rgb, float3 targetColor) {
+        float2 target = rgb2ycgco(targetColor.rgb).yz;
         float3 ycgco = rgb2ycgco(rgb);
         float sub = dot(target, ycgco.yz) / dot(target, target);
         ycgco.yz -= target * (sub + 0.5) * _SpillRemoval;
