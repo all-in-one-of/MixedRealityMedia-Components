@@ -6,7 +6,7 @@ public class QuadFrustumPlacer : MonoBehaviour {
 
 	[Range(1, 100)]
 	public float distance;
-	public Transform follower;
+	private Transform follower;
 	public GameObject plane;
 	[Tooltip("This is the lightning camera with an attached quad.")]
 	private Camera lightCam;
@@ -30,7 +30,9 @@ public class QuadFrustumPlacer : MonoBehaviour {
 			ctm = TransformManager.Instance;
 		}
 		if(follower == null) {
-			follower = ctm.GetTransform(followerName);
+			ctm.GetTransform(followerName, (transform) => {
+				follower = transform;
+			});
 		}
 	}
 	
