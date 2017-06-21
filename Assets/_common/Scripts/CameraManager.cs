@@ -35,6 +35,7 @@ public class CameraManager : MonoBehaviour {
 	public float fieldOfView;
 	public Transform rootTransform;
 	public Transform controllerTransform;
+	public Transform headsetTransform;
 
 	void Start () {
 		RecalculateFOV();
