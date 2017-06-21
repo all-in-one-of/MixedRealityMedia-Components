@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: GreenScreenRemoval
-  m_Shader: {fileID: 4800000, guid: 942a2d2ba0e87445b85d990ed66fc922, type: 3}
+  m_Name: DeltaE 1976 Demo
+  m_Shader: {fileID: 4800000, guid: 06152e80f9d4641fd9b6ad3fd0e0c96e, type: 3}
   m_ShaderKeywords: _ALPHABLUR_ON
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -55,8 +55,9 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - _AlphaBlur: 1
+    - _Black: 0
     - _BumpScale: 1
-    - _ColorTimer: 0
+    - _ColorTimer: 0.7
     - _Cutoff: 0.5
     - _Debug: 0
     - _DetailNormalMapScale: 1
@@ -71,7 +72,7 @@ Material:
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpillRemoval: 0.26
+    - _SpillRemoval: 0.22
     - _SrcBlend: 1
     - _Threshold: 0.32
     - _Tolerance: 0.15

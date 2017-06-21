@@ -1,4 +1,4 @@
-﻿Shader "Unlit/GreenRemovalSolid"
+Shader "Chroma Key/Solid Simple Distance"
 {
 	Properties
 	{
@@ -7,11 +7,9 @@
 		_SpillRemoval ("Spill Removal", Range(0, 2)) = 0.2
 		_Tolerance ("Tolerance", Range(0, 5)) = 0.2
 		_Threshold ("Threshold", Range(0, 5)) = 0.2
-		_ColorTimer ("Color Rotation Timer", Range(0, 10)) = 1
-		_YCgCoMult ("YCgCo Multiplier", Range(0, 200)) = 50
-		[Toggle] _YCgCo("YCgCo Method", Float) = 0
+		_ColorTimer ("Color Rotation Timer", Range(0, 1.2)) = 1
 		[Toggle] _Debug("Debug Out", Float) = 0
-		[Toggle] _AlphaBlur("Alpha Blur Lookup", Float) = 0
+		[Toggle] _Black("Color Background", Float) = 0
 	}
 	SubShader
 	{
@@ -26,6 +24,7 @@
 			
 			#include "UnityCG.cginc"
 			#include "GreenScreen.cginc"
+			#include "Generators.cginc"
 
 			struct appdata
 			{
@@ -55,32 +54,23 @@
 			float4 _MainTex_TexelSize;
 			float4 _TargetColor;
 			float _ColorTimer;
+			float _SpillRemoval;
 			int _AlphaBlur;
 			int _Debug;
+			int _Black;
 
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				if(_AlphaBlur) {
-					col.a = ChromaMin(i.uv, _MainTex_TexelSize, _MainTex, _TargetColor);
-				} else {
-					col.a = chromaKey(col, _TargetColor).w;
-				}
-
+                col.a = greenFilter(col, _TargetColor);
 				if(_Debug) {
 					return col.aaaa;
 				}
-				col = fixed4(spillRemoval(col.rgb, _TargetColor.rgb), col.a);
+				col = fixed4(spillRemoval(col.rgb, _TargetColor.rgb, _SpillRemoval), col.a);
 
-				float time = pow(_Time.y, _ColorTimer);
-				fixed4 tCol = fixed4(
-					sin(time),
-					cos(time),
-					sin(time) + cos(time * 0.7),
-					1
-				);
-				tCol *= _ColorTimer;
+				fixed4 tCol = genColorWheel(pow(_Time.y, _ColorTimer), i.uv);
+				tCol *= _ColorTimer * _Black;
 				return col * col.a + tCol * (1 - col.a);
 				return col;
 			}

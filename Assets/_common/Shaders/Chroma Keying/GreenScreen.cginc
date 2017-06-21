@@ -1,17 +1,11 @@
-float _SpillRemoval;
 float _Tolerance;
 float _Threshold;
-float _YCgCoMult;
-int _Inverse;
 
 // super barebones simplistic green screen removal
-float4 greenFilter(float4 pixel, float4 targetColor) {
+float greenFilter(float3 pixel, float3 targetColor) {
+    float remain = length(pixel - targetColor);
 
-    float4 remain = pixel - float4(targetColor.rgb, 1);
-    if(length(remain) < _Tolerance) {
-        return float4(0, 0, 0, 0);
-    }
-    return pixel;
+    return smoothstep(_Threshold * 0.5, (_Threshold + _Tolerance) * 0.5, remain);
 }
 
 // chroma keying
@@ -35,23 +29,13 @@ float3 ycgco2rgb(float3 col) {
     );
 }
 
-float4 ycgcoRemoval(float4 col, fixed4 targetColor) {
-    // YCGCO Color Space
-    float3 ycgco = rgb2ycgco(col.rgb);
-    float2 target = rgb2ycgco(targetColor.rgb).yz;
+float ycgcoRemoval(float3 col, float3 targetColor, float yCgCoMult) {
+    // YCGCO Color Space - extract CGreen, COrange
+    float2 ycgco = rgb2ycgco(col).yz;
+    float2 target = rgb2ycgco(targetColor).yz;
     // Adaptive Threshold over multiple samples - Otsu’s Binarization
-    float d = distance(ycgco.yz, target) * _YCgCoMult;
-    d = smoothstep(_Threshold * 10, (_Threshold + _Tolerance) * 10, d);
-    return float4(col.rgb, d);
-    // Spill Removal Part
-    float3 ycgco2 = rgb2ycgco(col);
-    float sub = dot(target, ycgco2.yz) / dot(target, target);
-    ycgco2.yz -= target * (sub + 0.5) * _SpillRemoval;
-    float3 col2 = ycgco2rgb(ycgco2);
-    if(_Inverse) {
-        d = 1 - d;
-    }
-    return float4(col2, col.a * d);
+    float d = distance(ycgco, target) * yCgCoMult;
+    return smoothstep(_Threshold * 10, (_Threshold + _Tolerance) * 10, d);
 }
 
 // Color Space Conversions can be found here:
@@ -125,30 +109,36 @@ float deltaE_CIE76_sRGB(float3 srgb, float3 ref) {
     return deltaE_CIE76(srgb, ref);    
 }
 
-float4 chromaKey(float4 col, float4 targetColor) {
+float chromaKey(float4 col, float4 targetColor) {
     if(col.a == 0) {
-        return col;
+        return 0;
     }
     float d2 = deltaE_CIE76_sRGB(col.xyz, targetColor.xyz) / 100;
-    d2 = smoothstep(_Threshold, (_Threshold + _Tolerance), d2);
-    d2 = pow(d2, 1/1.5f);
-    return float4(col.rgb, col.a * d2);
+    d2 = smoothstep(_Threshold, (_Threshold + _Tolerance), d2); // blend in min/max range
+    d2 = pow(d2, 1/1.5f); // gives a bit more leeway on the unity sliders
+    return col.a * d2;
 }
 
-float3 spillRemoval(float3 rgb, float3 targetColor) {
-        float2 target = rgb2ycgco(targetColor.rgb).yz;
-        float3 ycgco = rgb2ycgco(rgb);
-        float sub = dot(target, ycgco.yz) / dot(target, target);
-        ycgco.yz -= target * (sub + 0.5) * _SpillRemoval;
-        float3 col = ycgco2rgb(ycgco);
-        return col;
+float3 spillRemoval(float3 rgb, float3 targetColor, float weight) {
+    float2 target = rgb2ycgco(targetColor.rgb).yz;
+    float3 ycgco = rgb2ycgco(rgb);
+    float sub = dot(target, ycgco.yz) / dot(target, target);
+    ycgco.yz -= target * (sub + 0.5) * weight;
+    float3 col = ycgco2rgb(ycgco);
+    return col;
 }
 
-fixed ChromaMin(float2 uv, float4 texelSize, sampler2D tex, float4 targetColor) {
+float ChromaMin(float2 uv, float4 texelSize, sampler2D tex, float4 targetColor) {
     float4 delta = texelSize.xyxy * float4(-0.5, -0.5, 0.5, 0.5);
-    fixed alpha = chromaKey(tex2D(tex, uv + delta.xy), targetColor).w;
-    alpha = min(alpha, chromaKey(tex2D(tex, uv + delta.zy), targetColor).w);
-    alpha = min(alpha, chromaKey(tex2D(tex, uv + delta.xw), targetColor).w);
-    alpha = min(alpha, chromaKey(tex2D(tex, uv + delta.zw), targetColor).w);
+    float alpha = chromaKey(tex2D(tex, uv + delta.xy), targetColor);
+    alpha = min(alpha, chromaKey(tex2D(tex, uv + delta.zy), targetColor));
+    alpha = min(alpha, chromaKey(tex2D(tex, uv + delta.xw), targetColor));
+    alpha = min(alpha, chromaKey(tex2D(tex, uv + delta.zw), targetColor));
     return alpha;
+}
+
+float4 mixCol(float4 front, float4 median) {
+    fixed alphaRef = median.a; // that's what's left of alpha
+    fixed mixAlpha = alphaRef * (1 - front.a); // that's the alpha left after mixing front and back
+    return front * (1 - mixAlpha) + median * mixAlpha;
 }
