@@ -1,4 +1,4 @@
-Shader "Chroma Key/Solid YCgCo"
+Shader "Chroma Key/Comparison/Solid YCgCo"
 {
 	Properties
 	{

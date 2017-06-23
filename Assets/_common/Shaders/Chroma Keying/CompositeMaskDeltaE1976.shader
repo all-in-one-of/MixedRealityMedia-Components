@@ -12,7 +12,6 @@
 		_Tolerance ("Uppper Cut Off", Range(0, 5)) = 0.1
 		_Threshold ("Lower Cut Off", Range(0, 5)) = 0.4
 		[Toggle] _RawCamera ("Raw Camera Out", Float) = 0
-		[Toggle] _AlphaBlur("Alpha Blur Lookup", Float) = 0
 		[Toggle] _DebugAlpha ("Debug Alpha Out", Float) = 0
 	}
 	SubShader
@@ -59,7 +58,6 @@
 			sampler2D _LightTex;
 			fixed4 _TargetColor;
 			float _SpillRemoval;
-			int _AlphaBlur;
 			int _DebugAlpha;
 			int _RawCamera;
 
@@ -80,18 +78,15 @@
 				col.a = alpha.a;
 				webCol.a = 1 - webMask.a;
 
-				// do the chroma keying
-				if(_AlphaBlur) {
-					webCol.a = ChromaMin(i.uv, _MainTex_TexelSize, _WebcamTex, _TargetColor);
-				} else {
-					webCol.a = chromaKey(webCol, _TargetColor);
-				}
+				// simple chroma keying
+				webCol.a = chromaKey(webCol, _TargetColor);
 
 				webCol.rgb = spillRemoval(webCol.rgb, _TargetColor.rgb, _SpillRemoval);
 
 				if(_DebugAlpha) {
 					return webCol.aaaa;
 				}
+				return col;
 				col = mixCol(col, webCol * light);
 				return col;
 			}

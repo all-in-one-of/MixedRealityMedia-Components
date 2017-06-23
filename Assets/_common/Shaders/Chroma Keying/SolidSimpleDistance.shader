@@ -1,4 +1,4 @@
-Shader "Chroma Key/Solid Simple Distance"
+Shader "Chroma Key/Comparison/Solid Simple Distance"
 {
 	Properties
 	{

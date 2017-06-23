@@ -13,7 +13,6 @@ public class QuadFrustumPlacer : MonoBehaviour {
 
 	[Tooltip("Would likely be the HMD - therefore the HMD name would be appropiate")]
 	public string followerName;
-	public string rigName;
 
 	public TransformManager ctm;
 
@@ -43,6 +42,6 @@ public class QuadFrustumPlacer : MonoBehaviour {
 		var width = height * Screen.width / Screen.height;
 
 		plane.transform.localScale = new Vector3((float) width / 10f, 1, (float) height / 10);
-		plane.transform.localPosition = lightCam.transform.forward * distance;
+		plane.transform.position = lightCam.transform.position + lightCam.transform.forward * distance;
 	}
 }

@@ -1,4 +1,4 @@
-Shader "Chroma Key/Comparison/Composite Mask YCgCo"
+Shader "Chroma Key/Composite Mask DeltaE 1976 Blur"
 {
 	Properties
 	{
@@ -11,7 +11,6 @@ Shader "Chroma Key/Comparison/Composite Mask YCgCo"
 		_SpillRemoval ("Spill Removal", Range(0, 2)) = 0.18
 		_Tolerance ("Uppper Cut Off", Range(0, 5)) = 0.1
 		_Threshold ("Lower Cut Off", Range(0, 5)) = 0.4
-        _YCgCoMult ("YCgCo Multiplier", Float) = 1
 		[Toggle] _RawCamera ("Raw Camera Out", Float) = 0
 		[Toggle] _DebugAlpha ("Debug Alpha Out", Float) = 0
 	}
@@ -25,8 +24,9 @@ Shader "Chroma Key/Comparison/Composite Mask YCgCo"
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			#include "GreenScreen.cginc"
+			
 			#include "UnityCG.cginc"
+			#include "GreenScreen.cginc"
 
 			struct appdata
 			{
@@ -51,16 +51,16 @@ Shader "Chroma Key/Comparison/Composite Mask YCgCo"
 				return o;
 			}
 
+			float4 _MainTex_TexelSize;
 			sampler2D _AlphaTex;
 			sampler2D _WebcamTex;
 			sampler2D _WebcamMask;
 			sampler2D _LightTex;
-			float _SpillRemoval;
-			float _YCgCoMult;
 			fixed4 _TargetColor;
+			float _SpillRemoval;
 			int _DebugAlpha;
 			int _RawCamera;
-			
+
 			fixed4 frag (v2f i) : SV_Target
 			{
 				// sample the textures
@@ -78,12 +78,10 @@ Shader "Chroma Key/Comparison/Composite Mask YCgCo"
 				col.a = alpha.a;
 				webCol.a = 1 - webMask.a;
 
-				// do the color distance keying and spill removal
-				webCol = fixed4(
-					spillRemoval(webCol.rgb, _TargetColor.rgb, _SpillRemoval),
-					ycgcoRemoval(webCol.rgb, _TargetColor.rgb, _YCgCoMult)
-				);
+                // Blurry function
+                webCol.a = ChromaMin(i.uv, _MainTex_TexelSize, _WebcamTex, _TargetColor);
 
+				webCol.rgb = spillRemoval(webCol.rgb, _TargetColor.rgb, _SpillRemoval);
 				if(_DebugAlpha) {
 					return webCol.aaaa;
 				}

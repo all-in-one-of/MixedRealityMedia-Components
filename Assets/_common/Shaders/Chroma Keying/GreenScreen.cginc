@@ -138,7 +138,7 @@ float ChromaMin(float2 uv, float4 texelSize, sampler2D tex, float4 targetColor) 
 }
 
 float4 mixCol(float4 front, float4 median) {
-    fixed alphaRef = median.a; // that's what's left of alpha
-    fixed mixAlpha = alphaRef * (1 - front.a); // that's the alpha left after mixing front and back
+    float alphaRef = median.a; // that's what's left of alpha
+    float mixAlpha = alphaRef * (1 - front.a); // that's the alpha left after mixing front and median
     return front * (1 - mixAlpha) + median * mixAlpha;
 }

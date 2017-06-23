@@ -1,4 +1,4 @@
-﻿Shader "Chroma Key/Composite Mask Simple Distance"
+﻿Shader "Chroma Key/Comparison/Composite Mask Simple Distance"
 {
 	Properties
 	{
