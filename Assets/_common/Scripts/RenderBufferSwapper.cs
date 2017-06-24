@@ -11,6 +11,11 @@ public class RenderBufferSwapper : MonoBehaviour {
 	public long seenFrames;
 	public Material cameraViewMaterial;
     public RawImage rawOutputDisplay;
+    ,,
+    0.26 spill
+    0.15 tol
+    0.32 threshold
+    alpha blur
     */ 
     [RangeAttribute(15, 60)]
     public float cameraFPS;
@@ -42,6 +47,8 @@ public class RenderBufferSwapper : MonoBehaviour {
 	public List<RenderTexture> stencilBuffers;
     public List<RenderTexture> lightBuffers;
 	public WebcamEnabler webcamEnabler;
+    public Material unlit3Display;
+    public RenderTexture greenscreenResult;
     public int index;
 
 
@@ -55,6 +62,10 @@ public class RenderBufferSwapper : MonoBehaviour {
         absoluteTimer = 0.0f;
         initialDelay = frameDelay + fractionDelay;
 
+
+        greenscreenResult = new RenderTexture(Screen.width, Screen.height, 0);
+        greenscreenResult.name = "Greenscreen Result (Generated)";
+        unlit3Display.mainTexture = greenscreenResult;
 		RebuildRenderBuffers();
         targetMaterial.SetTexture(materialWebcamFieldName, webcamEnabler.webcamTexture);
 	}
@@ -68,6 +79,7 @@ public class RenderBufferSwapper : MonoBehaviour {
         }
 
         SwapRenderBuffer();
+        Graphics.Blit(targetMaterial.GetTexture("_MainTex"), greenscreenResult, targetMaterial);
         innerTimer %= frameWindow;
         absoluteTimer = absoluteTimer % (2f) + initialDelay;
 	}

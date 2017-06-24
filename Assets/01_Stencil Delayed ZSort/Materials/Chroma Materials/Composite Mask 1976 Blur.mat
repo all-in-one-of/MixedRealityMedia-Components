@@ -85,13 +85,13 @@ Material:
     - _RawCamera: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpillRemoval: 0.18
+    - _SpillRemoval: 0
     - _SrcBlend: 1
-    - _Threshold: 0.06
-    - _Tolerance: 0.09
+    - _Threshold: 0.13
+    - _Tolerance: 0.27
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TargetColor: {r: 0.4666667, g: 0.29803923, b: 0.38431376, a: 1}
+    - _TargetColor: {r: 0.32941177, g: 0.34901962, b: 0.37254903, a: 1}

@@ -77,7 +77,6 @@ Shader "Chroma Key/Composite Mask DeltaE 1976 Blur"
 				// apply the alpha transfer
 				col.a = alpha.a;
 				webCol.a = 1 - webMask.a;
-
                 // Blurry function
                 webCol.a = ChromaMin(i.uv, _MainTex_TexelSize, _WebcamTex, _TargetColor);
 
