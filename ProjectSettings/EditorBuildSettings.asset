@@ -11,6 +11,12 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/01_Stencil Delayed ZSort/00_Stencil Delayed ZSort Scene.unity
     guid: 56e1f606f876344b8a50d8b3e426b707
-  - enabled: 1
+  - enabled: 0
     path: Assets/Light Reconstruction/Light Reconstruction.unity
     guid: 197e0c50fbc6e4343bceb016f154e935
+  - enabled: 1
+    path: Assets/02_Greenscreen Display/UI Compartment.unity
+    guid: 85eac1d48b615884db531724449ba218
+  - enabled: 0
+    path: Assets/03_Window Companion/Companion Application.unity
+    guid: 1f6c69edc237c7a4c8e6bae8f04b4aae

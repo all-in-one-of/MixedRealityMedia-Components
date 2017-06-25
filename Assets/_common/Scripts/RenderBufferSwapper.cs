@@ -42,11 +42,12 @@ public class RenderBufferSwapper : MonoBehaviour {
     private float innerTimer;
     private float absoluteTimer;
     private float initialDelay;
-    public List<RenderTexture> colorBuffers;
-    public List<RenderTexture> alphaBuffers;
-	public List<RenderTexture> stencilBuffers;
-    public List<RenderTexture> lightBuffers;
+    private List<RenderTexture> colorBuffers;
+    private List<RenderTexture> alphaBuffers;
+	private List<RenderTexture> stencilBuffers;
+    private List<RenderTexture> lightBuffers;
 	public WebcamEnabler webcamEnabler;
+    private WebCamTexture webcamTexture;
     public Material unlit3Display;
     public RenderTexture greenscreenResult;
     public int index;
@@ -67,7 +68,7 @@ public class RenderBufferSwapper : MonoBehaviour {
         greenscreenResult.name = "Greenscreen Result (Generated)";
         unlit3Display.mainTexture = greenscreenResult;
 		RebuildRenderBuffers();
-        targetMaterial.SetTexture(materialWebcamFieldName, webcamEnabler.webcamTexture);
+        ResetWebcam();
 	}
 	
 	void Update () {
@@ -111,6 +112,15 @@ public class RenderBufferSwapper : MonoBehaviour {
         }
 
         index++;
+
+        if(webcamTexture != webcamEnabler.webcamTexture) {
+            ResetWebcam();
+        }
+    }
+
+    public void ResetWebcam() {
+        webcamTexture = webcamEnabler.webcamTexture;
+        targetMaterial.SetTexture(materialWebcamFieldName, webcamTexture);
     }
 
 	void RebuildRenderBuffers() {
