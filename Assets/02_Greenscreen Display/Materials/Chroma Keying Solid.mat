@@ -57,7 +57,7 @@ Material:
     - _AlphaBlur: 1
     - _Black: 1
     - _BumpScale: 1
-    - _ColorTimer: 1
+    - _ColorTimer: 1.2
     - _Cutoff: 0.5
     - _Debug: 0
     - _DetailNormalMapScale: 1
@@ -71,10 +71,10 @@ Material:
     - _Parallax: 0.02
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SpillRemoval: 0.18
+    - _SpillRemoval: 0.21
     - _SrcBlend: 1
     - _Threshold: 0.3
-    - _Tolerance: 0.24
+    - _Tolerance: 0.12
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

@@ -20,6 +20,7 @@ public class MainController : MonoBehaviour {
 	void SetDefaultState() {
 		menuHintPresenter.gameObject.SetActive(false);
 		menuHintPresenter.onClick += () => { MenuHintClicked(); };
+		// configCanvas.gameObject.SetActive(false);
 	}
 
 	void MenuHintClicked() {

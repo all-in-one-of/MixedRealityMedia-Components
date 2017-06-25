@@ -37,6 +37,8 @@ public class MenuHintPresenter : MonoBehaviour {
 		if(animating) {
 			return;
 		}
+		// Somehow just started breaking - so we reload the rect transform
+		pos = GetComponent<RectTransform>();
 		animating = true;
 		gameObject.SetActive(true);
 		StartCoroutine(EnableCoroutine());
