@@ -57,7 +57,7 @@ Material:
     - _AlphaBlur: 1
     - _Black: 1
     - _BumpScale: 1
-    - _ColorTimer: 1.2
+    - _ColorTimer: 0.651
     - _Cutoff: 0.5
     - _Debug: 0
     - _DetailNormalMapScale: 1

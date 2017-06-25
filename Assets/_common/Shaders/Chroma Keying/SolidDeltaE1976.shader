@@ -75,7 +75,7 @@
 				}
 				col = fixed4(spillRemoval(col.rgb, _TargetColor.rgb, _SpillRemoval), col.a);
 
-				fixed4 tCol = genColorWheel(pow(_Time.y, _ColorTimer), i.uv);
+				fixed4 tCol = genColorWheel(pow(_Time.x, _ColorTimer), i.uv);
 				tCol *= _ColorTimer * _Black;
 				return col * col.a + tCol * (1 - col.a);
 				return col;
