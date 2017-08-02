@@ -124,8 +124,7 @@ float3 spillRemoval(float3 rgb, float3 targetColor, float weight) {
     float3 ycgco = rgb2ycgco(rgb);
     float sub = dot(target, ycgco.yz) / dot(target, target);
     ycgco.yz -= target * (sub + 0.5) * weight;
-    float3 col = ycgco2rgb(ycgco);
-    return col;
+    return ycgco2rgb(ycgco);
 }
 
 float ChromaMin(float2 uv, float4 texelSize, sampler2D tex, float4 targetColor) {

@@ -64,6 +64,7 @@
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
+				return col;
 				if(_AlphaBlur) {
 					col.a = ChromaMin(i.uv, _MainTex_TexelSize, _MainTex, _TargetColor);
 				} else {

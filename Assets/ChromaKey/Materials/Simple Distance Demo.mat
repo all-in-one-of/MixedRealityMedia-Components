@@ -72,8 +72,8 @@ Material:
     - _SpecularHighlights: 1
     - _SpillRemoval: 0.22
     - _SrcBlend: 1
-    - _Threshold: 0.41
-    - _Tolerance: 0.23
+    - _Threshold: 0.26
+    - _Tolerance: 0.17
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:

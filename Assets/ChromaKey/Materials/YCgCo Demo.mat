@@ -73,7 +73,7 @@ Material:
     - _SpecularHighlights: 1
     - _SpillRemoval: 0.22
     - _SrcBlend: 1
-    - _Threshold: 0.29
+    - _Threshold: 0.56
     - _Tolerance: 0.62
     - _UVSec: 0
     - _YCgCoMult: 100
